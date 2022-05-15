@@ -6,23 +6,23 @@ import (
 )
 
 type GameDriver interface {
-	CreateGame() (GameID, error)
-	JoinGame(GameID) error
+	HealthCheck() error
+	CreateGame() (string, error)
+	JoinGame(string) error
 }
-
-type GameID string
 
 func TestPlayingAGameWith2Players(t *testing.T) {
 	topT := t
+	driver := NewOTIGameDriver()
 
 	var (
-		driver GameDriver
-		gameID GameID
+		gameID string
 		err    error
 	)
 
-	t.Run("this test actually runs", func(t *testing.T) {
-		assert.Equal(topT, 1, 1)
+	t.Run("The website is healthy", func(t *testing.T) {
+		err = driver.HealthCheck()
+		assert.NoError(t, err, "the application should be healthy")
 	})
 
 	t.Run("Player 1 creates a game", func(t *testing.T) {
