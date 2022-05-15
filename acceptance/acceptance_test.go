@@ -5,35 +5,16 @@ import (
 	"testing"
 )
 
-type GameDriver interface {
-	CreateGame() (GameID, error)
-	JoinGame(GameID) error
+// example command: WIP_ACCEPTANCE_ENABLED=RIP-123 make acceptance-test
+func TestSomeFeature(t *testing.T) {
+	WIP(t, "RIP-123")
+	t.Log("Running RIP-123")
+	assert.Equal(t, 1, 23)
 }
 
-type GameID string
-
-func TestPlayingAGameWith2Players(t *testing.T) {
-	topT := t
-
-	var (
-		driver GameDriver
-		gameID GameID
-		err    error
-	)
-
-	t.Run("this test actually runs", func(t *testing.T) {
-		assert.Equal(topT, 1, 1)
-	})
-
-	t.Run("Player 1 creates a game", func(t *testing.T) {
-		WIP(t)
-		gameID, err = driver.CreateGame()
-		assert.NoError(topT, err)
-	})
-
-	t.Run("Player 2 can join the game", func(t *testing.T) {
-		WIP(t)
-		err := driver.JoinGame(gameID)
-		assert.NoError(topT, err)
-	})
+// example command: WIP_ACCEPTANCE_ENABLED=RIP-567 make acceptance-test
+func TestMyOtherFeature(t *testing.T) {
+	WIP(t, "RIP-567")
+	t.Log("running RIP-567")
+	assert.Equal(t, 5, 67)
 }
