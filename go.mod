@@ -6,6 +6,7 @@ require (
 	github.com/alecthomas/assert/v2 v2.0.2
 	github.com/cenkalti/backoff/v4 v4.1.3
 	go.uber.org/zap v1.21.0
+	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4
 )
 
 require (

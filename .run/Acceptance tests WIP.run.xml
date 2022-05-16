@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Acceptance tests WIP" type="GoTestRunConfiguration" factoryName="Go Test">
+    <module name="go-dots" />
+    <working_directory value="$PROJECT_DIR$" />
+    <envs>
+      <env name="BASE_URL" value="http://localhost:8000" />
+      <env name="WIP_ACCEPTANCE_ENABLED" value="true" />
+    </envs>
+    <kind value="DIRECTORY" />
+    <package value="github.com/tamj0rd2/go-dots" />
+    <directory value="$PROJECT_DIR$/acceptance" />
+    <filePath value="$PROJECT_DIR$" />
+    <framework value="gotest" />
+    <method v="2" />
+  </configuration>
+</component>

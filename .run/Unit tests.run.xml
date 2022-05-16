@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Unit tests" type="GoTestRunConfiguration" factoryName="Go Test">
+    <module name="go-dots" />
+    <working_directory value="$PROJECT_DIR$" />
+    <go_parameters value="-run 'Unit'" />
+    <kind value="DIRECTORY" />
+    <package value="github.com/tamj0rd2/go-dots" />
+    <directory value="$PROJECT_DIR$/src" />
+    <filePath value="$PROJECT_DIR$" />
+    <framework value="gotest" />
+    <method v="2" />
+  </configuration>
+</component>
