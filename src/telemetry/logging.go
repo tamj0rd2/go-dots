@@ -9,9 +9,13 @@ type loggerKey struct{}
 
 func NewApplicationLogger(ctx context.Context) (*zap.Logger, context.Context) {
 	logger, _ := zap.NewProduction()
-	return logger, context.WithValue(ctx, loggerKey{}, logger)
+	return logger, AddLoggerToContext(ctx, logger)
 }
 
-func GetLogger(ctx context.Context) *zap.Logger {
+func GetLoggerFromContext(ctx context.Context) *zap.Logger {
 	return ctx.Value(loggerKey{}).(*zap.Logger)
+}
+
+func AddLoggerToContext(ctx context.Context, logger *zap.Logger) context.Context {
+	return context.WithValue(ctx, loggerKey{}, logger)
 }

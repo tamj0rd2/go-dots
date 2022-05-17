@@ -1,8 +1,10 @@
 package acceptance
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/cenkalti/backoff/v4"
+	"github.com/tamj0rd2/go-dots/src/domain"
 	"golang.org/x/net/websocket"
 	"net/http"
 	"net/url"
@@ -23,7 +25,7 @@ func NewWebGameDriver(cfg WebGameDriverConfig) GameDriver {
 
 func (d WebGameDriver) HealthCheck() error {
 	return backoff.Retry(func() error {
-		healthURL := fmt.Sprintf("%s/health", d.cfg.HTTPBaseURL.String())
+		healthURL := fmt.Sprintf("%s/health", d.cfg.HTTPBaseURL)
 
 		res, err := d.httpClient.Get(healthURL)
 		if err != nil {
@@ -40,10 +42,9 @@ func (d WebGameDriver) HealthCheck() error {
 }
 
 func (d WebGameDriver) JoinGame(id string) error {
-	url := d.cfg.WSBaseURL
-	url.Path = fmt.Sprintf("/games/%s", id)
+	url := fmt.Sprintf("%s/games/%s", d.cfg.WSBaseURL, id)
 
-	ws, err := websocket.Dial(url.String(), "", d.cfg.HTTPBaseURL.String())
+	ws, err := websocket.Dial(url, "", d.cfg.HTTPBaseURL)
 	if err != nil {
 		return err
 	}
@@ -62,9 +63,29 @@ func (d WebGameDriver) JoinGame(id string) error {
 	return nil
 }
 
+func (d WebGameDriver) GetBoard(gameID string) (domain.Board, error) {
+	url := fmt.Sprintf("%s/games/%s", d.cfg.HTTPBaseURL, gameID)
+
+	res, err := d.httpClient.Get(url)
+	if err != nil {
+		return domain.EmptyBoard, fmt.Errorf("failed to make request to %s: %w", url, err)
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return domain.EmptyBoard, fmt.Errorf("failed to get board with status code %d - %s", res.StatusCode, url)
+	}
+
+	var game domain.Game
+	if err := json.NewDecoder(res.Body).Decode(&game); err != nil {
+		return domain.EmptyBoard, fmt.Errorf("failed to decode board: %w", err)
+	}
+
+	return game.Board, nil
+}
+
 type WebGameDriverConfig struct {
-	HTTPBaseURL url.URL
-	WSBaseURL   url.URL
+	HTTPBaseURL string
+	WSBaseURL   string
 }
 
 func NewWebGameDriverConfig() (cfg WebGameDriverConfig, err error) {
@@ -78,11 +99,11 @@ func NewWebGameDriverConfig() (cfg WebGameDriverConfig, err error) {
 		return
 	}
 
-	cfg = WebGameDriverConfig{
-		HTTPBaseURL: *parsedURL,
-		WSBaseURL:   *parsedURL,
-	}
-	cfg.WSBaseURL.Scheme = "ws"
+	wsBaseURL := *parsedURL
+	wsBaseURL.Scheme = "ws"
 
-	return cfg, nil
+	return WebGameDriverConfig{
+		HTTPBaseURL: parsedURL.String(),
+		WSBaseURL:   wsBaseURL.String() + "/ws",
+	}, nil
 }

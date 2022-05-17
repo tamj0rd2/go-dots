@@ -2,6 +2,7 @@ package acceptance
 
 import (
 	"github.com/alecthomas/assert/v2"
+	"github.com/tamj0rd2/go-dots/src/domain"
 	"os"
 	"testing"
 )
@@ -19,7 +20,7 @@ func TestPlayingAGameWith2Players(t *testing.T) {
 
 	t.Run("The website is healthy", func(t *testing.T) {
 		err = firstPlayerDriver.HealthCheck()
-		assert.NoError(t, err, "the application should be healthy")
+		assert.NoError(topT, err, "the application should be healthy")
 	})
 
 	t.Run("Both players can join the game", func(t *testing.T) {
@@ -30,16 +31,15 @@ func TestPlayingAGameWith2Players(t *testing.T) {
 		assert.NoError(topT, err)
 	})
 
-	//t.Run("When a player leaves the game, the other also gets disconnected", func(t *testing.T) {
-	//	WIP(t)
-	//	err = firstPlayerDriver.LeaveGame(gameID)
-	//	assert.NoError(topT, err)
-	//
-	//	WIP(t)
-	//	isConnected, err := firstPlayerDriver.IsConnectedToGame(gameID)
-	//	assert.NoError(topT, err)
-	//	assert.False(topT, isConnected)
-	//})
+	t.Run("When both players have joined the game, they both see a blank board", func(t *testing.T) {
+		firstPlayerBoard, err := firstPlayerDriver.GetBoard(gameID)
+		assert.NoError(topT, err)
+		assert.Equal(topT, domain.EmptyBoard, firstPlayerBoard)
+
+		secondPlayerBoard, err := secondPlayerDriver.GetBoard(gameID)
+		assert.NoError(topT, err)
+		assert.Equal(topT, domain.EmptyBoard, secondPlayerBoard)
+	})
 }
 
 func WIP(t *testing.T) {
